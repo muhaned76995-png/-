@@ -1,0 +1,80 @@
+{
+  "entities": {
+    "Visitor": {
+      "title": "Visitor",
+      "description": "Tracks unique visitors to the site",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "timestamp"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Real-time chat messages",
+      "type": "object",
+      "properties": {
+        "senderName": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "isAdmin": { "type": "boolean" },
+        "uid": { "type": "string" }
+      },
+      "required": ["senderName", "text", "timestamp", "uid"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "User comments on the site",
+      "type": "object",
+      "properties": {
+        "userName": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userName", "text", "timestamp"]
+    },
+    "AdminStatus": {
+      "title": "AdminStatus",
+      "description": "Tracks admin's last seen status",
+      "type": "object",
+      "properties": {
+        "lastSeen": { "type": "string", "format": "date-time" },
+        "isOnline": { "type": "boolean" }
+      },
+      "required": ["lastSeen"]
+    },
+    "SiteStats": {
+      "title": "SiteStats",
+      "description": "General site statistics",
+      "type": "object",
+      "properties": {
+        "visitorCount": { "type": "number" },
+        "commentCount": { "type": "number" },
+        "projectCount": { "type": "number" }
+      }
+    }
+  },
+  "firestore": {
+    "/visitors/{visitorId}": {
+      "schema": "Visitor",
+      "description": "Individual visitor records"
+    },
+    "/chat/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Chat messages"
+    },
+    "/comments/{commentId}": {
+      "schema": "Comment",
+      "description": "User comments"
+    },
+    "/adminStatus/status": {
+      "schema": "AdminStatus",
+      "description": "Admin online status"
+    },
+    "/stats/global": {
+      "schema": "SiteStats",
+      "description": "Global statistics"
+    }
+  }
+}

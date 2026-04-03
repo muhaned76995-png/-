@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isValidString(val, min, max) {
+      return val is string && val.size() >= min && val.size() <= max;
+    }
+
+    // Visitors: Anyone can create a record (to track unique visits)
+    match /visitors/{visitorId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['id', 'timestamp']) &&
+                      isValidString(request.resource.data.id, 1, 100);
+    }
+
+    // Chat: Authenticated users can read/write
+    match /chat/{messageId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['senderName', 'text', 'timestamp', 'uid']) &&
+                      isValidString(request.resource.data.text, 1, 1000);
+    }
+
+    // Comments: Anyone can read, anyone can create with a name
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['userName', 'text', 'timestamp']) &&
+                      isValidString(request.resource.data.userName, 1, 50) &&
+                      isValidString(request.resource.data.text, 1, 1000);
+    }
+
+    // Admin Status: Anyone can read, only admin can write
+    match /adminStatus/status {
+      allow read: if true;
+      allow write: if request.auth.token.email == "muhaned76995@gmail.com";
+    }
+
+    // Stats: Anyone can read, anyone can update (increment)
+    match /stats/global {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
